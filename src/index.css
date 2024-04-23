@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes rotacion {
+    0% {
+        transform: rotateY(0deg);
+    }
+    50% {
+        transform: rotateY(90deg);
+    }
+    100% {
+        transform: rotateY(180deg);
+    }
+}
+
+/* Clase de animación */
+.girando {
+    background-image: url("https://th.bing.com/th/id/R.6f3c089e901d16945fe418c107a3e9bc?rik=PptPIKFMm2Gc%2bQ&pid=ImgRaw&r=0");
+    background-size: contain; /* Ajusta el tamaño de la imagen para que cubra toda la carta */
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: girar 0.1s ease;
+}

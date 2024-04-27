@@ -1,43 +1,26 @@
 import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const UserContext = createContext();
+const UserContext = createContext();
 
-export function UserContextProvider(children) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const navigate = useNavigate()
-  
-  async function verSiHaySesionLogeado(){
+export const UserContextProvider = ({ children }) => {
+    const [logged, setLogged] = useState(false);
 
-    try {
-        const { data: { user } } = await supabase.auth.getUser()
-        
-        if(user){
-            setIsLoggedIn(true)
-            navigate('/pokemonMemory')
-        }
+    const login = () => {
+        setLogged(true);
+    };
 
-    } catch (error) {
-        console.log(error)
-    }
-    
+    const logout = () => {
+        setLogged(false);
+    };
 }
-
-  const [usuario, setUsuario] = useState({
-    nombre: 'default',
-    apellido: 'default',
-    email: 'default',
-    password: ''
-})
-
 
   return(
     <UserContext.Provider value={{
-        usuario, setUsuario,
-        isLoggedIn, setIsLoggedIn,
-        verSiHaySesionLogeado,
+        logged, login, logout
     }}>
         {children}
     </UserContext.Provider>
   )
-}
+
+export const autenticarUsuario = () => useContext(UserContext);

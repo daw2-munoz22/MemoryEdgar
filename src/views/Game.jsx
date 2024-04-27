@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import GrupoTarjetas from "../components/GrupoTarjetas";
 import { useClicks } from "../context/ClicksContext";
 import Loader from '../components/Loader';
+import Swal from 'sweetalert2';
 
 const Game = () => {
 
@@ -11,6 +12,9 @@ const Game = () => {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
+    async function SaveGame(){
+
+    }
     async function fetchData() {
       try {
         const pokemons = [];
@@ -48,7 +52,23 @@ const Game = () => {
       setTimeLeft(prevTime => {
         if(prevTime <= 1) {
           clearTimeout(timer);
-          console.log("FIN DEL JUEGO");
+
+          Swal.fire({
+            title: "Game over",
+            text: "Fin del joc!",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Aceptar"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              SaveGame();
+              //HACER ALGO XD
+            }
+          });
+
           return 0;
         } else {
           return prevTime - 1;

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
-import { User } from '../bd/user';
-import { supabase } from '../bd/supabase';
+import { User } from '../database/model/user';
 import { Navigate } from 'react-router-dom';
 import ForgotPasswordForm from './ForgotPasswordForm';
+import { supabase } from '../database/supabase';
 
 
 function RegisterLoginForm() {

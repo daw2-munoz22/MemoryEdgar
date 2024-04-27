@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import Swal from 'sweetalert2';
-import { supabase } from '../bd/supabase';
+import { supabase } from '../database/supabase';
 
 function ForgotPasswordForm() {
   const [email, setEmail] = useState('');

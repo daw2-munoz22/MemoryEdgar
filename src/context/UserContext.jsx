@@ -1,19 +1,41 @@
 import { createContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const UserContext = createContext();
 
 export function UserContextProvider(children) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const navigate = useNavigate()
+  
+  async function verSiHaySesionLogeado(){
+
+    try {
+        const { data: { user } } = await supabase.auth.getUser()
+        
+        if(user){
+            setIsLoggedIn(true)
+            navigate('/pokemonMemory')
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+    
+}
+
   const [usuario, setUsuario] = useState({
-    email: "default",
-    password: "",
-    imagen:
-      "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg",
-  });
+    nombre: 'default',
+    apellido: 'default',
+    email: 'default',
+    password: ''
+})
 
 
   return(
     <UserContext.Provider value={{
-        usuario, setUsuario
+        usuario, setUsuario,
+        isLoggedIn, setIsLoggedIn,
+        verSiHaySesionLogeado,
     }}>
         {children}
     </UserContext.Provider>

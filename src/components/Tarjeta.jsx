@@ -4,7 +4,7 @@ import { useClicks } from "../context/ClicksContext";
 function Tarjeta({ nombre, imagen }) {
   const [contador, setContador] = useState(0); // Estado para llevar la cuenta de cuántas veces se ha hecho clic en esta tarjeta.
   const [girada, setGirada] = useState(false); // Estado para controlar si la tarjeta está girada (visible) o no.
-  const { incrementTotalClicks, CardA, setCardA, CardB, setCardB } = useClicks(); // Obtiene las funciones y estados necesarios del contexto.
+  const { incrementTotalClicks, CardA, setCardA, CardB, setCardB, setScore, incrementScore } = useClicks(); // Obtiene las funciones y estados necesarios del contexto.
 
   useEffect(() => {
     // Solo actúa si ambas cartas están seleccionadas
@@ -12,6 +12,7 @@ function Tarjeta({ nombre, imagen }) {
       if (CardA.nombre === CardB.nombre) {
         // Si las cartas coinciden, manténlas visibles y resetea las selecciones
         setTimeout(() => {
+          incrementScore();
           setCardA(null);
           setCardB(null);
         }, 1000); // Tiempo para ver las cartas antes de seguir jugando
@@ -29,7 +30,7 @@ function Tarjeta({ nombre, imagen }) {
         }, 1000); // Las cartas se giran hacia atrás después de 1 segundo
       }
     }
-  }, [CardA, CardB, setCardA, setCardB, nombre]);
+  }, [CardA, CardB, setCardA, setCardB, nombre, setScore]);
 
  
   const handleClick = () => {
@@ -62,3 +63,4 @@ function Tarjeta({ nombre, imagen }) {
 }
 
 export default Tarjeta;
+

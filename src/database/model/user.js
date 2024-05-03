@@ -1,3 +1,6 @@
+//Este fichero almacena una clase para crear los Usuarios y el CRUD de ellos
+
+
 // Importamos la conexión a la base de datos
 import { supabase } from '../supabase.js'
 

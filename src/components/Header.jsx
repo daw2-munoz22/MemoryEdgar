@@ -35,6 +35,7 @@ const Header = () => {
         <Route path='/marvelMemory' element={<Game />}/>
         <Route path='/about' element={<About />}/>
       </Routes>
+
     </Router>
     
   )

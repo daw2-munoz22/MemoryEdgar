@@ -1,33 +1,39 @@
-import {User} from "../database/model/user.js";
+import { useState } from "react";
 import Swal from "sweetalert2";
-import {Navigate} from "react-router-dom";
-import {useState} from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../database/supabase.js";
 
 export const Login = () => {
     const [loginUsername, setLoginUsername] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
+    const navigate = useNavigate(); // Initialize the useNavigate hook
 
     async function loginUser() {
         if (loginUsername && loginPassword) {
             try {
-                const user = await User.login({ email: loginUsername, password: loginPassword }); // Utiliza el método login de la clase User para iniciar sesión
-                if (user) {
-                    Swal.fire('Sessió iniciada amb èxit');
-                    // Aquí puedes redirigir al usuario a otra página, etc.
-                    Navigate('/pokemonmemory'); // Redirige al usuario a la vista home
-                } else {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: loginUsername,
+                    password: loginPassword
+                });
+
+                if (error) {
+                    console.error('Error al iniciar sesión:', error.message);
                     Swal.fire({
-                        icon: 'error',
                         title: 'Error',
-                        text: 'Nom d\'usuari o contrasenya incorrectes.',
+                        text: error.message,
+                        icon: 'error'
+                    });
+                } else {
+                    Swal.fire('Sessió iniciada amb èxit').then(() => {
+                        navigate('/pokemonmemory'); // Use navigate here for redirection
                     });
                 }
             } catch (error) {
                 console.error('Error al iniciar sesión:', error.message);
                 Swal.fire({
-                    icon: 'error',
                     title: 'Error',
-                    text: 'Nom d\'usuari o contrasenya incorrectes.',
+                    text: error.message,
+                    icon: 'error'
                 });
             }
         } else {
@@ -40,7 +46,6 @@ export const Login = () => {
     };
 
     return (
-
         <>
             <div className="text-center">
                 <h2 className="text-3xl font-extrabold text-white">Inicia Sessió</h2>

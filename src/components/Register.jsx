@@ -1,43 +1,43 @@
 import {useState} from "react";
 import {supabase} from "../database/supabase.js";
 import Swal from "sweetalert2";
-import SaltManager from "../manager/cryptography/SaltManager";
+import SaltManager from "../manager/cryptography/SaltManager.ts";
 
 
 export const Register = () => {
     const [registerUsername, setRegisterUsername] = useState('');
     const [registerPassword, setRegisterPassword] = useState('');
+    const [registerEmail, setRegisterEmail] = useState('');
+
+
 
     async function registerUser() {
-        if (registerUsername && registerPassword) {
+        let salt = new SaltManager();
+        //Authorize
+        if (registerEmail && registerPassword && registerUsername) {
             try {
-                let saltManager = new SaltManager();
-                //construir clase que genere salt + contraseña . la junta y genera un hash de los 2
-                //crear metodo get que devuelva eso
-
-                let salt = saltManager.getSalt();
-
-
-
-
                 let { data, error } = await supabase.auth.signUp({
-                    email: registerUsername,
-                    password: salt + registerPassword
+                    email: registerEmail,
+                    password: registerPassword
                 })
+                const { data2, error2 } = await supabase
+                    .from('perfiles')
+                    .insert([
+                        {
+                            name: registerUsername,
+                            email: registerEmail,
+                            salt: salt.getSalt(),
+                        },
+                    ])
+                    .select()
 
-                if (error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Error al registrar el usuario. Por favor, inténtalo de nuevo.',
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Éxito',
-                        text: 'Usuario registrado con éxito.',
-                    });
-                }
+                //Perfil User
+                Swal.fire({
+                    title: error.code === 200 ? 'Éxito' : 'Error',
+                    text: error.message,
+                    icon: error.code === 200 ? 'success' : 'error'
+                });
+
             } catch (error) {
                 console.error('Error al registrar el usuario:', error.message);
                 Swal.fire({
@@ -63,6 +63,8 @@ export const Register = () => {
             <div className="rounded-md shadow-sm border border-gray-300 p-4">
                 <input type="text" placeholder="Nom d'usuari" className="form-input mb-4 text-black"
                        value={registerUsername} onChange={e => setRegisterUsername(e.target.value)}/>
+                <input type="text" placeholder="Email d'usuari" className="form-input mb-4 text-black"
+                       value={registerEmail} onChange={e => setRegisterEmail(e.target.value)}/>
                 <input type="password" placeholder="Contrasenya" className="form-input mb-4 text-black"
                        value={registerPassword} onChange={e => setRegisterPassword(e.target.value)}/>
                 <button onClick={registerUser}

@@ -1,12 +1,13 @@
 import {supabase} from "../supabase.js";
 
 export class Partidas {
-    constructor(id = null, puntos = null, tiempo = null, usuario_id = null, created_at = null) {
+    constructor(id = null, puntos = null, tiempo = null, usuari = null, created_at = null, user_icon = null) {
         this.id = id;
         this.puntos = puntos;
         this.tiempo = tiempo;
-        this.usuario_id = usuario_id;
+        this.usuari = usuari;
         this.created_at = created_at;
+        this.user_icon = user_icon;
     }
 
     static async getAll() {
@@ -17,70 +18,37 @@ export class Partidas {
                 .order('created_at', { ascending: false });
 
             if (error) throw new Error(error.message);
-            return partidas.map(partida => new Partidas(partida.id, partida.puntos, partida.tiempo, partida.usuario_id, partida.created_at));
+            return partidas.map(partida => new Partidas(partida.id, partida.puntos, partida.tiempo, partida.usuari, partida.created_at, partidas.user_icon));
         } catch (error) {
             console.error('Error al obtener todas las partidas:', error.message);
             throw error;
         }
     }
 
-    static async getById(id) {
-        try {
-            const { data: partida, error } = await supabase
-                .from('partidas')
-                .select('*')
-                .eq('id', id)
-                .single();
 
-            if (error) throw new Error(error.message);
-            return new Partidas(partida.id, partida.puntos, partida.tiempo, partida.usuario_id, partida.created_at);
-        } catch (error) {
-            console.error('Error al obtener la partida por ID:', error.message);
-            throw error;
+    static async getUserData(auth) {
+      //HACER RUTINA PARA OBTENER EL USUARIO APARTIR DEL LOGIN
+        try {
+            //pues obtener el user del que esta abierto ahora
+        }catch(error) {
+            console.error(auth.error)
         }
     }
+    //obtiene el icono del usuario
+    static async getUserIconByUserId(usuarioId) {
+        const { data, error } = await supabase
+            .from('partidas')
+            .select('user_icon')  // selecciona todas las columnas
+            .eq('usuari', usuarioId)  // filtra donde 'usuari' es igual al usuarioId proporcionado
+            .order('data', { ascending: false })  // ordena los resultados por la columna 'data' en orden descendente
+            .limit(1);  // limita los resultados a 1
 
-    static async getByUserId(userId) {
-        try {
-            const { data: partidas, error } = await supabase
-                .from('partidas')
-                .select('*')
-                .eq('usuario_id', userId);
 
-            if (error) throw new Error(error.message);
-            return partidas.map(partida => new Partidas(partida.id, partida.puntos, partida.tiempo, partida.usuario_id, partida.created_at));
-        } catch (error) {
-            console.error('Error al obtener partidas por usuario:', error.message);
-            throw error;
+        if (error) {
+            console.error('Error en la consulta:', error)
+            return null;
         }
-    }
 
-    static async create(perfilData) {
-        try {
-            const { data, error } = await supabase
-                .from('partidas')
-                .insert([perfilData], { returning: "representation" });
-
-            if (error) throw new Error(error.message);
-            return new Partidas(data[0].id, data[0].puntos, data[0].tiempo, data[0].usuario_id, data[0].created_at);
-        } catch (error) {
-            console.error('Error al crear una nueva partida:', error.message);
-            throw error;
-        }
-    }
-
-    static async delete(id) {
-        try {
-            const { error } = await supabase
-                .from('partidas')
-                .delete()
-                .eq('id', id);
-
-            if (error) throw new Error(error.message);
-            return true;
-        } catch (error) {
-            console.error('Error al borrar la partida:', error.message);
-            throw error;
-        }
+        return data;
     }
 }

@@ -1,4 +1,4 @@
-import Tarjeta from './Tarjeta'; // Importa el component Tarjeta
+  import Tarjeta from './Tarjeta'; // Importa el component Tarjeta
 
 function GrupoTarjetas({ datos, onGeneralClick }) {
   return (

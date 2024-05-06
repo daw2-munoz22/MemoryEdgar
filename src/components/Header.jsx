@@ -1,40 +1,60 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route, Link, useNavigate} from 'react-router-dom';
 import Home from '../views/Home';
 import Game from '../views/Game';
 import About from '../views/About';
+import {useUser} from "../context/UserContext.jsx";
+import {AppBar} from "./AppBar.jsx";
+import {Partidas} from "../database/model/partida.js";
+import {useEffect, useState} from "react";
 
-const Header = () => {
+//Realizar renderPages para navegar en cada apartado del menu
+
+const menu = [
+    { name: 'Home', href: '/', current: true, element: <Home /> },
+    { name: 'Pokemon Memory', href: '/pokemonMemory', current: false, element: <Game /> },
+    { name: 'Marvel Memory', href: '/marvelMemory', current: false, element: <Game /> },
+    { name: 'Acerca de', href: '/about', current: false, element: <About /> },
+];
+
+//Generamos una funcion asincrona como rutina y la llamamos a la síncrona
+async function getIconAsync(user) {
+    let partida = { user_icon: `/public/default-user.svg`};
+    if (user) {
+        partida = await Partidas.getUserIconByUserId(user.id);
+    }
+    return partida;
+}
+
+ const Header = () => {
+    const { user, logout } = useUser(); // Utiliza logout desde el contexto
+     const [partida, setPartida] = useState({ user_icon: '/public/default-user.svg' });
+
+     useEffect(() => {
+         if (user) {
+             getIconAsync(user).then(setPartida).catch(error => {
+                 console.error("Error al obtener el icono:", error);
+                 setPartida({ user_icon: '/public/userRegister.jpeg' }); // Set default icon on error
+             });
+         }
+     }, [user]); // Depend on `user` to refetch when `user` changes
+
   return (
     <Router>
       <div>
-      <header className="bg-blue-50 py-4">
-          <div className="container mx-auto items-center">
-            <nav>
-              <ul className="flex justify-center">
-                <li>
-                  <Link to="/" className="border p-2 shadow-lg bg-yellow-800 text-white hover:scale-105 hover:shadow-xl cursor-pointer">Home</Link>
-                </li>
-                <li>
-                  <Link to="/pokemonMemory" className="border p-2 shadow-lg bg-yellow-800 text-white hover:scale-105 hover:shadow-xl cursor-pointer">Pokemon Memory</Link>
-                </li>
-                <li>
-                  <Link to="/marvelMemory" className="border p-2 shadow-lg bg-yellow-800 text-white hover:scale-105 hover:shadow-xl cursor-pointer">Marvel Memory</Link>
-                </li>
-                <li>
-                  <Link to="/about" className="border p-2 shadow-lg bg-yellow-800 text-white hover:scale-105 hover:shadow-xl cursor-pointer">Acerca de</Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </header>
+          <header className="bg-blue-50 py-4">
+              <AppBar navigation={menu} notifications={false} usercookie={user} loginstate={logout} partida={partida}/>
+              {/*<div className="container mx-auto items-center"></div>*/}
+          </header>
       </div>
-      
-      <Routes>
-        <Route path='/' element={<Home />}/>
-        <Route path='/pokemonMemory' element={<Game />}/>
-        <Route path='/marvelMemory' element={<Game />}/>
-        <Route path='/about' element={<About />}/>
-      </Routes>
+
+        {/*Instanciamos tantas pantallas como componentes tiene el menu */}
+        <Routes>
+            {
+                menu.map((menu, index) => (
+                    <Route key={index} path={menu.href} element={menu.element} />
+                ))
+            }
+        </Routes>
 
     </Router>
     

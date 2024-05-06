@@ -64,7 +64,8 @@ const Game = () => {
             confirmButtonText: "Aceptar"
           }).then((result) => {
             if (result.isConfirmed) {
-              SaveGame();
+              //SaveGame();
+              console.log(result);
               //HACER ALGO XD
             }
           });

@@ -2,10 +2,12 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../database/supabase.js";
+import {useUser} from "../context/UserContext.jsx";
 
 export const Login = () => {
     const [loginUsername, setLoginUsername] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
+    const { login } = useUser(); // Accede a la función login desde el contexto
     const navigate = useNavigate(); // Initialize the useNavigate hook
 
     async function loginUser() {
@@ -24,6 +26,7 @@ export const Login = () => {
                         icon: 'error'
                     });
                 } else {
+                    login(data.user)
                     Swal.fire('Sessió iniciada amb èxit').then(() => {
                         navigate('/pokemonmemory'); // Use navigate here for redirection
                     });
@@ -51,7 +54,7 @@ export const Login = () => {
                 <h2 className="text-3xl font-extrabold text-white">Inicia Sessió</h2>
             </div>
             <div className="rounded-md shadow-sm border border-gray-300 p-4">
-                <input type="text" placeholder="Nom d'usuari" className="form-input mb-4 text-black"
+                <input type="text" placeholder="Email d'usuari" className="form-input mb-4 text-black"
                        value={loginUsername} onChange={e => setLoginUsername(e.target.value)}/>
                 <input type="password" placeholder="Contrasenya" className="form-input mb-4 text-black"
                        value={loginPassword} onChange={e => setLoginPassword(e.target.value)}/>

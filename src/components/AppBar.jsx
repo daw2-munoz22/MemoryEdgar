@@ -12,12 +12,16 @@ function SetMenuState(usercookie, loginstate) {
         return <>
             <Menu.Item>
                 <a href="#"
-                   className={classNames(usercookie ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>Tu
-                    perfíl</a>
+                   className={classNames(usercookie ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
+                    Ver Todas las Partidas
+                    </a>
             </Menu.Item>
             <Menu.Item>
-                <a href="#"
-                   className={classNames(usercookie ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>Settings</a>
+                <a onclick="#" href="#"
+                   className={classNames(usercookie ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
+                    Ver mis Partidas
+
+                </a>
             </Menu.Item>
             <Menu.Item>
                 <a onClick={loginstate} href="/"

@@ -1,12 +1,12 @@
 import {supabase} from "../supabase.js";
 
 export class Partidas {
-    constructor(id = null, puntos = null, tiempo = null, usuari = null, created_at = null, user_icon = null) {
+    constructor(id = null, created_at = null, usuari = null,  hora = null, puntuacion = null, user_icon = null) {
         this.id = id;
-        this.puntos = puntos;
-        this.tiempo = tiempo;
-        this.usuari = usuari;
         this.created_at = created_at;
+        this.usuari = usuari;
+        this.hora = hora;
+        this.puntuacion = puntuacion;
         this.user_icon = user_icon;
     }
 
@@ -18,22 +18,42 @@ export class Partidas {
                 .order('created_at', { ascending: false });
 
             if (error) throw new Error(error.message);
-            return partidas.map(partida => new Partidas(partida.id, partida.puntos, partida.tiempo, partida.usuari, partida.created_at, partidas.user_icon));
+            return partidas.map(partida => new Partidas(partida.id, partida.created_at, partida.usuari, partida.hora, partida.puntuacion, partidas.user_icon));
         } catch (error) {
             console.error('Error al obtener todas las partidas:', error.message);
             throw error;
         }
     }
 
+    static async InsertPartida(partida) {
+        // Assumeix que `partida` és un objecte que té les propietats `usuari`, `data`, `hora` i `puntuació`.
+        const { created_at, usuari, data, hora, puntuacion, user_icon } = partida;
 
-    static async getUserData(auth) {
-      //HACER RUTINA PARA OBTENER EL USUARIO APARTIR DEL LOGIN
-        try {
-            //pues obtener el user del que esta abierto ahora
-        }catch(error) {
-            console.error(auth.error)
+        // Realitza la inserció a la taula 'partidas'
+        const { data: responseData, error } = await supabase
+            .from('partidas')
+            .insert([
+                {
+
+                    created_at: created_at,
+                    usuari: usuari,
+                    data: data,
+                    hora: hora,
+                    puntuacion: puntuacion,
+                    user_icon: ''
+                }
+            ])
+            .select();
+        // Gestiona possibles errors
+        if (error) {
+            console.error("Error inserting partida:", error);
+            return null; // o potser voldries llançar una excepció o gestionar l'error d'una altra manera
         }
+
+        // Retorna les dades inserides o alguna confirmació si es desitja
+        return responseData;
     }
+
     //obtiene el icono del usuario
     static async getUserIconByUserId(usuarioId) {
         const { data, error } = await supabase

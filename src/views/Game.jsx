@@ -3,6 +3,11 @@ import GrupoTarjetas from "../components/GrupoTarjetas";
 import { useClicks } from "../context/ClicksContext";
 import Loader from '../components/Loader';
 import Swal from 'sweetalert2';
+import {Partidas} from "../database/model/partida.js";
+import {useUser} from "../context/UserContext.jsx";
+import { musicPlayer, FarandulaMusicCollection } from "../manager/music/musicManager.js"; //
+// añadir música al juego
+
 
 const Game = () => {
 
@@ -10,37 +15,65 @@ const Game = () => {
   const [pokemonAleatorios, setPokemonAleatorios] = useState([]);
   const [timeLeft, setTimeLeft] = useState(20);  // Temporizador inicializado en 20 segundos
   const [isLoading, setLoading] = useState(true);
+  const { user } = useUser();
+  let songDictionary = new FarandulaMusicCollection(); //instanciamos la colección de música
+
+  async function SaveGame() {
+    // Suponiendo que tienes los datos de la partida disponibles
+    // Por ejemplo, podrían venir de una interfaz de usuario o ser generados durante el juego
+    let partida = {
+      usuari: user.email,
+      data: new Date().toISOString().split('T')[0], // Fecha actual en formato YYYY-MM-DD
+      hora: new Date().toISOString().split('T')[1].split('.')[0], // Hora actual en formato HH:MM:SS
+      puntuacion: score // Un ejemplo de puntuación
+    };
+
+    // Llama a la función InsertPartida y espera a que se complete la inserción
+    try {
+      let response = await Partidas.InsertPartida(partida);
+      console.log('Partida guardada con éxito:', response);
+    } catch (error) {
+      console.error('Error al guardar la partida:', error);
+    }
+  }
 
   useEffect(() => {
-    async function SaveGame(){
-
-    }
     async function fetchData() {
       try {
-        const pokemons = [];
-        for (let i = 0; i < 9; i++) {
+        const requests = Array.from({ length: 9 }, () => {
           const random = Math.floor(Math.random() * 1000);
-          const response = await fetch(
-              `https://pokeapi.co/api/v2/pokemon/${random}`
-          );
-          if (!response.ok) {
-            throw new Error("Failed to fetch data");
-          }
-          const data = await response.json();
-          pokemons.push({
-            id: data.id,
-            nombre: data.name,
-            imagen: data.sprites.other["official-artwork"].front_default,
-          });
-        }
+          return fetch(`https://pokeapi.co/api/v2/pokemon/${random}`)
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error("Failed to fetch data");
+                }
+                return response.json();
+              })
+              .then(data => ({
+                id: data.id,
+                nombre: data.name,
+                imagen: data.sprites.other["official-artwork"].front_default,
+              }));
+        });
 
-        const duplicadoPokemons = [...pokemons, ...pokemons];
-        const pokemonsAleatorios = duplicadoPokemons.sort(() => Math.random() - 0.5);
+        const pokemons = await Promise.all(requests); //realizar todas las peticiones y resolver todas asincrónicamente
+
+        songDictionary.addSong("thequeenofdunes", "the-queen-of-dunes-169012.mp3", 56, 107);
+        songDictionary.addSong("summer-adventures", "summer-adventures-115949.mp3", 56, 107);
+
+        const duplicadoPokemons = [...pokemons, ...pokemons]; //duplicamos los pokemons obtenidos
+        const pokemonsAleatorios = duplicadoPokemons.sort(() => Math.random() - 0.5); //los desordenamos y los colocamos en posiciones aleatorias
 
         setPokemonAleatorios(pokemonsAleatorios);
-        setLoading(false); // Esto se mueve aquí para indicar que la carga ha terminado después de obtener los datos
       } catch (error) {
         console.error(error.message);
+      } finally {
+        setLoading(false);
+
+        //una vez finalizada el proceso de espera para descargar los pokemons, iniciamos la musica del juego
+        const song1 = songDictionary.getSong("thequeenofdunes");
+        musicPlayer.swapSong(song1.audioUrl, song1.loopStartTime, song1.loopEndTime);
+        //musicPlayer.play();
       }
     }
 
@@ -64,7 +97,7 @@ const Game = () => {
             confirmButtonText: "Aceptar"
           }).then((result) => {
             if (result.isConfirmed) {
-              //SaveGame();
+             SaveGame();
               console.log(result);
               //HACER ALGO XD
             }

@@ -58,8 +58,12 @@ const Game = () => {
 
         const pokemons = await Promise.all(requests); //realizar todas las peticiones y resolver todas asincrónicamente
 
-        songDictionary.addSong("thequeenofdunes", "the-queen-of-dunes-169012.mp3", 56, 107);
-        songDictionary.addSong("summer-adventures", "summer-adventures-115949.mp3", 56, 107);
+        songDictionary.addSong("mus_thequeenofdunes", "the-queen-of-dunes-169012.mp3", 56, 107);
+        songDictionary.addSong("mus_summer-adventures", "summer-adventures-115949.mp3", 56, 107);
+        songDictionary.addSong("sfx_accept", "beep696243.mp3", 56, 107);
+        songDictionary.addSong("sfx_cancel", "systemnotification4206493.mp3", 56, 107);
+
+
 
         const duplicadoPokemons = [...pokemons, ...pokemons]; //duplicamos los pokemons obtenidos
         const pokemonsAleatorios = duplicadoPokemons.sort(() => Math.random() - 0.5); //los desordenamos y los colocamos en posiciones aleatorias
@@ -71,9 +75,9 @@ const Game = () => {
         setLoading(false);
 
         //una vez finalizada el proceso de espera para descargar los pokemons, iniciamos la musica del juego
-        const song1 = songDictionary.getSong("thequeenofdunes");
+        const song1 = songDictionary.getSong("mus_thequeenofdunes");
         musicPlayer.swapSong(song1.audioUrl, song1.loopStartTime, song1.loopEndTime);
-        //musicPlayer.play();
+
       }
     }
 
@@ -85,6 +89,7 @@ const Game = () => {
       setTimeLeft(prevTime => {
         if(prevTime <= 1) {
           clearTimeout(timer);
+
 
           Swal.fire({
             title: "Game over",

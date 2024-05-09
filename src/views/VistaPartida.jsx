@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient"; // Asegúrate de que el camino es correcto
+import { supabase } from "../database/supabase.js";
 import { useClicks } from "../context/ClicksContext.jsx";
 
 export const VistaPartida = () => {
@@ -14,7 +14,8 @@ export const VistaPartida = () => {
         try {
             let { data: partidas, error } = await supabase
                 .from('partidas')
-                .select('*');
+                .select('*')
+                .order('puntuacion', { ascending: false });
 
             if (error) throw error;
 

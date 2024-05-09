@@ -11,13 +11,13 @@ function SetMenuState(usercookie, loginstate) {
     if (usercookie != false){ //active es un estado que venía
         return <>
             <Menu.Item>
-                <a href="#"
+                <a href="/rankings"
                    className={classNames(usercookie ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
                     Ver Todas las Partidas
                     </a>
             </Menu.Item>
             <Menu.Item>
-                <a onclick="#" href="#"
+                <a href="/my-rankings"
                    className={classNames(usercookie ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
                     Ver mis Partidas
 
@@ -70,16 +70,9 @@ export const AppBar = ({navigation, notifications, usercookie, loginstate, parti
                                 </div>
                                 <div className="hidden sm:ml-6 sm:block">
                                     <div className="flex space-x-4">
-                                        {navigation.map((item) => (
-                                            <a
-                                                key={item.name}
-                                                href={item.href}
-                                                className={classNames(
-                                                    item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                                                    'rounded-md px-3 py-2 text-sm font-medium'
-                                                )}
-                                                aria-current={item.current ? 'page' : undefined}
-                                            >
+
+                                        {navigation.filter(reference => reference.visible).map((item) => (
+                                            <a key={item.name} href={item.href} className={classNames(item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'rounded-md px-3 py-2 text-sm font-medium')} aria-current={item.current ? 'page' : undefined}>
                                                 {item.name}
                                             </a>
                                         ))}

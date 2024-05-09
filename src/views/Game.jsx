@@ -3,9 +3,9 @@ import GrupoTarjetas from "../components/GrupoTarjetas";
 import { useClicks } from "../context/ClicksContext";
 import Loader from '../components/Loader';
 import Swal from 'sweetalert2';
-import {Partidas} from "../database/model/partida.js";
 import {useUser} from "../context/UserContext.jsx";
-import { musicPlayer, FarandulaMusicCollection } from "../manager/music/musicManager.js"; //
+import { musicPlayer, FarandulaMusicCollection } from "../manager/music/musicManager.js";
+import {supabase} from "../database/supabase.js"; //
 // añadir música al juego
 
 
@@ -21,19 +21,27 @@ const Game = () => {
   async function SaveGame() {
     // Suponiendo que tienes los datos de la partida disponibles
     // Por ejemplo, podrían venir de una interfaz de usuario o ser generados durante el juego
-    let partida = {
-      usuari: user.email,
-      data: new Date().toISOString().split('T')[0], // Fecha actual en formato YYYY-MM-DD
-      hora: new Date().toISOString().split('T')[1].split('.')[0], // Hora actual en formato HH:MM:SS
-      puntuacion: score // Un ejemplo de puntuación
-    };
 
     // Llama a la función InsertPartida y espera a que se complete la inserción
     try {
-      let response = await Partidas.InsertPartida(partida);
-      console.log('Partida guardada con éxito:', response);
+
+      const { data: { user } } = await supabase.auth.getUser()
+      const { data: usu, error: errorUsu } = await supabase
+          .from('partidas')
+          .insert([
+            {
+              usuari: user.id,
+              data: new Date().toISOString().split('T')[0], // Fecha actual en formato YYYY-MM-DD
+              hora: new Date().toISOString().split('T')[1].split('.')[0], // Hora actual en formato HH:MM:SS
+              puntuacion: score,
+            }
+          ])
+          .select()
+
+      if(errorUsu) throw new Error (errorUsu.message)
+
     } catch (error) {
-      console.error('Error al guardar la partida:', error);
+      console.log(error)
     }
   }
 

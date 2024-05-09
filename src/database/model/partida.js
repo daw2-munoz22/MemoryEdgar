@@ -26,32 +26,29 @@ export class Partidas {
     }
 
     static async InsertPartida(partida) {
-        // Assumeix que `partida` és un objecte que té les propietats `usuari`, `data`, `hora` i `puntuació`.
-        const { created_at, usuari, data, hora, puntuacion, user_icon } = partida;
+        // Asegúrate de que los nombres de las propiedades coinciden con los nombres de las columnas de tu base de datos.
+        const { data: { user } } = await supabase.auth.getUser()
+        //const { created_at, usuari, hora, puntuacion } = partida;
 
-        // Realitza la inserció a la taula 'partidas'
-        const { data: responseData, error } = await supabase
-            .from('partidas')
-            .insert([
-                {
+        try {
 
-                    created_at: created_at,
-                    usuari: usuari,
-                    data: data,
-                    hora: hora,
-                    puntuacion: puntuacion,
-                    user_icon: ''
-                }
-            ])
-            .select();
-        // Gestiona possibles errors
-        if (error) {
-            console.error("Error inserting partida:", error);
-            return null; // o potser voldries llançar una excepció o gestionar l'error d'una altra manera
+            const { data: { user } } = await supabase.auth.getUser()
+            const { data: usu, error: errorUsu } = await supabase
+                .from('partidas')
+                .insert([
+                    {
+                        usuari: user.email,
+                        puntuacion: puntuacion,
+                    }
+                ])
+                .select()
+
+            if(errorUsu)throw new Error (errorUsu.message)
+
+        } catch (error) {
+            console.log(error)
         }
 
-        // Retorna les dades inserides o alguna confirmació si es desitja
-        return responseData;
     }
 
     //obtiene el icono del usuario

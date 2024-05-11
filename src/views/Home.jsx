@@ -1,4 +1,5 @@
 import RegisterLoginForm from "../components/RegisterLoginForm"
+import HomeComponent from "../components/HomeComponent.jsx";
 
 
 
@@ -6,9 +7,10 @@ import RegisterLoginForm from "../components/RegisterLoginForm"
 const Home = () => {
   return (
     <div id="home" className="bg-slate-700 h-screen">
+        <HomeComponent />
+
       <h1 className="text-3xl text-center text-white uppercase pt-4">
-         <RegisterLoginForm />  {/*Pasarlo a Swal*/}
-        
+
       </h1>
       
     </div>

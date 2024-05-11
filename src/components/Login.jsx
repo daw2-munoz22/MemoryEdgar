@@ -13,6 +13,7 @@ export const Login = () => {
     async function loginUser() {
         if (loginUsername && loginPassword) {
             try {
+
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email: loginUsername,
                     password: loginPassword
@@ -27,6 +28,14 @@ export const Login = () => {
                     });
                 } else {
                     login(data.user)
+
+                    const { logindata, error } = await supabase
+                        .from('perfiles')
+                        .insert([
+                            { id: data.user.id, name: "PACO FIESTAS" },
+                        ])
+                        .select()
+
                     Swal.fire('Sessió iniciada amb èxit').then(() => {
                         navigate('/pokemonmemory'); // Use navigate here for redirection
                     });
@@ -39,6 +48,8 @@ export const Login = () => {
                     icon: 'error'
                 });
             }
+
+
         } else {
             Swal.fire({
                 icon: 'warning',

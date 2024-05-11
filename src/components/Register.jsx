@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {supabase} from "../database/supabase.js";
 import Swal from "sweetalert2";
-import SaltManager from "../manager/cryptography/SaltManager.ts";
+
 
 
 export const Register = () => {
@@ -15,19 +15,11 @@ export const Register = () => {
         //Authorize
         if (registerUsername && registerEmail && registerPassword  ) {
             try {
+                /**/
                 let { data, error } = await supabase.auth.signUp({
                     email: registerEmail,
                     password: registerPassword
                 })
-                const { data: usu, error: errorUsu } = await supabase
-                    .from('perfiles')
-                    .insert([
-                        {
-                            nombre: registerUsername
-
-                        },
-                    ])
-                    .select()
 
                 //Perfil User
                 Swal.fire({
@@ -39,9 +31,9 @@ export const Register = () => {
             } catch (error) {
                 console.error('Error al registrar el usuario:', error.message);
                 Swal.fire({
-                    icon: 'error',
+                    icon: 'info',
                     title: 'Error',
-                    text: 'Error al registrar el usuario. Por favor, inténtalo de nuevo.',
+                    text: 'Se ha enviado un correo, por favor, verifica su email.',
                 });
             }
         } else {

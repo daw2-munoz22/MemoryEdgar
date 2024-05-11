@@ -12,21 +12,19 @@ export const Register = () => {
 
 
     async function registerUser() {
-        let salt = new SaltManager();
         //Authorize
-        if (registerEmail && registerPassword && registerUsername) {
+        if (registerUsername && registerEmail && registerPassword  ) {
             try {
                 let { data, error } = await supabase.auth.signUp({
                     email: registerEmail,
                     password: registerPassword
                 })
-                const { data2, error2 } = await supabase
+                const { data: usu, error: errorUsu } = await supabase
                     .from('perfiles')
                     .insert([
                         {
-                            name: registerUsername,
-                            email: registerEmail,
-                            salt: salt.getSalt(),
+                            nombre: registerUsername
+
                         },
                     ])
                     .select()

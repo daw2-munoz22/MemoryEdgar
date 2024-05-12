@@ -16,7 +16,7 @@ const menu = [
     { name: 'Home', href: '/', current: true, visible: true, element: <Home /> },
     { name: 'Pokemon Memory', href: '/pokemonMemory', current: false, visible: true, element: <Game /> },
     { name: 'Marvel Memory', href: '/marvelMemory', current: false, visible: true, element: <Game /> },
-    { name: 'Rankings', href: '/rankings', current: false, visible: true, element: <VistaPartida /> },
+    { name: 'Rankings', href: '/rankings', current: false, visible: false, element: <VistaPartida /> },
     { name: 'My Rankings', href: '/my-rankings', current: false, visible: false, element: <VistaPartida /> },
     { name: 'Acerca de', href: '/about', current: false, visible: true, element: <About /> },
 

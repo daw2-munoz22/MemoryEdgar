@@ -5,14 +5,18 @@ import { useClicks } from "../context/ClicksContext.jsx";
 export const VistaPartida = () => {
 
     const [partidas, setPartidas] = useState([]);
-    const [profiles, setProfile] = useState([]);
 
     useEffect(() => {
-        loadPartidas(); // Carga las partidas cuando el componente se monta
-        loadProfiles(); // Carga las partidas cuando el componente se monta
+        async function fetchData() {
+            const profiles = await loadProfiles();
+            const partidas = await loadPartidas(profiles);
+            setPartidas(partidas);
+        }
+
+        fetchData();
     }, []);
 
-    async function loadPartidas() {
+    async function loadPartidas(profiles) {
         try {
             let { data: partidas, error } = await supabase
                 .from('partidas')
@@ -21,23 +25,30 @@ export const VistaPartida = () => {
 
             if (error) throw error;
 
-            setPartidas(partidas);
+            // Mapear los IDs de usuario a nombres de usuario en las partidas
+            partidas.forEach(partida => {
+                partida.usuari = profiles.find(profile => profile.id === partida.usuari)?.name || "Usuario Desconocido";
+            });
+
+            return partidas;
         } catch (error) {
             console.error('Error loading partidas:', error);
+            return [];
         }
     }
 
     async function loadProfiles() {
         try {
-            let { data: profile, error } = await supabase
+            let { data: profiles, error } = await supabase
                 .from('perfiles')
-                .select(`name, partidas(id)`);
-//aqui ahora debes hacer el mapping entre las 2 tablas
+                .select('name');
+
             if (error) throw error;
 
-            setProfile(profile);
+            return profiles;
         } catch (error) {
-            console.error('Error loading partidas:', error);
+            console.error('Error loading profiles:', error);
+            return [];
         }
     }
 
@@ -69,6 +80,5 @@ export const VistaPartida = () => {
                 </table>
             </div>
         </div>
-
     );
 }

@@ -3,7 +3,7 @@ import { supabase } from "../database/supabase.js";
 import { useClicks } from "../context/ClicksContext.jsx";
 
 export const VistaPartida = () => {
-    
+
     const [partidas, setPartidas] = useState([]);
     const [profiles, setProfile] = useState([]);
 

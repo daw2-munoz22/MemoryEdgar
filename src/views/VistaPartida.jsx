@@ -5,9 +5,11 @@ import { useClicks } from "../context/ClicksContext.jsx";
 export const VistaPartida = () => {
     
     const [partidas, setPartidas] = useState([]);
+    const [profiles, setProfile] = useState([]);
 
     useEffect(() => {
         loadPartidas(); // Carga las partidas cuando el componente se monta
+        loadProfiles(); // Carga las partidas cuando el componente se monta
     }, []);
 
     async function loadPartidas() {
@@ -20,6 +22,20 @@ export const VistaPartida = () => {
             if (error) throw error;
 
             setPartidas(partidas);
+        } catch (error) {
+            console.error('Error loading partidas:', error);
+        }
+    }
+
+    async function loadProfiles() {
+        try {
+            let { data: profile, error } = await supabase
+                .from('perfiles')
+                .select(`name, partidas(id)`);
+//aqui ahora debes hacer el mapping entre las 2 tablas
+            if (error) throw error;
+
+            setProfile(profile);
         } catch (error) {
             console.error('Error loading partidas:', error);
         }

@@ -8,6 +8,7 @@ import React, {useState} from "react";
 import {VistaPartida} from "../views/VistaPartida.jsx";
 import {LoginAuth} from "./LoginAuth.jsx";
 import {RegisterAuth} from "./RegisterAuth.jsx";
+import {UserProfile} from "./UserProfile.jsx";
 
 //Realizar renderPages para navegar en cada apartado del menu
 
@@ -15,12 +16,13 @@ const menu = [
     { name: 'Home', href: '/', current: true, visible: true, element: <Home /> },
     { name: 'Pokemon Memory', href: '/pokemonMemory', current: false, visible: true, element: <Game /> },
     { name: 'Marvel Memory', href: '/marvelMemory', current: false, visible: true, element: <Game /> },
-    { name: 'Rankings', href: '/rankings', current: false, visible: false, element: <VistaPartida /> },
+    { name: 'Rankings', href: '/rankings', current: false, visible: true, element: <VistaPartida /> },
     { name: 'My Rankings', href: '/my-rankings', current: false, visible: false, element: <VistaPartida /> },
     { name: 'Acerca de', href: '/about', current: false, visible: true, element: <About /> },
 
     { name: 'LoginAuth', href: '/loginAuth', current: false, visible: false, element: <LoginAuth /> },
     { name: 'RegisterAuth', href: '/registerAuth', current: false, visible: false, element: <RegisterAuth /> },
+    { name: 'UserProfile', href: '/userprofile', current: false, visible: false, element: <UserProfile /> },
 ];
 
 const Header = () => {

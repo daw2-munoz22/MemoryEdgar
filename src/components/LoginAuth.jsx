@@ -1,8 +1,9 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import {useUser} from "../context/UserContext.jsx";
 import {useNavigate} from "react-router-dom";
 import {supabase} from "../database/supabase.js";
 import Swal from "sweetalert2";
+import {UserProfile} from "./UserProfile.jsx";
 
 export const LoginAuth = () => {
     const [loginUsername, setLoginUsername] = useState('');
@@ -30,15 +31,8 @@ export const LoginAuth = () => {
                 } else {
                     login(data.user)
 
-                    const { logindata, error } = await supabase
-                        .from('perfiles')
-                        .insert([
-                            { id: data.user.id, name: "PACO FIESTAS" },
-                        ])
-                        .select()
-
                     Swal.fire('Sessió iniciada amb èxit').then(() => {
-                        navigate('/pokemonmemory'); // Use navigate here for redirection
+                        navigate('/userprofile'); // Use navigate here for redirection
                     });
                 }
             } catch (error) {

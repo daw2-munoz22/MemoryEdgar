@@ -25,6 +25,7 @@ const menu = [
     { name: 'UserProfile', href: '/userprofile', current: false, visible: false, element: <UserProfile /> },
 ];
 
+
 const Header = () => {
     const { user, logout } = useUser(); // Utiliza logout desde el contexto
      const [partida, setPartida] = useState({ user_icon: '/default-user.svg' });

@@ -3,12 +3,14 @@ import Home from '../views/Home';
 import Game from '../views/Game';
 import About from '../views/About';
 import {useUser} from "../context/UserContext.jsx";
-import {AppBar} from "./AppBar.jsx";
+
 import React, {useState} from "react";
 import {VistaPartida} from "../views/VistaPartida.jsx";
 import {LoginAuth} from "./LoginAuth.jsx";
 import {RegisterAuth} from "./RegisterAuth.jsx";
 import {UserProfile} from "./UserProfile.jsx";
+import {AppBar} from "./AppBar.jsx";
+import NoPage from "../views/NoPage.jsx";
 
 //Realizar renderPages para navegar en cada apartado del menu
 
@@ -33,25 +35,27 @@ const Header = () => {
 
 
   return (
-    <Router>
-      <div>
-          <header className="bg-blue-50 py-4">
-              <AppBar navigation={menu} notifications={false} usercookie={user} loginstate={logout} partida={partida}/>
-              {/*<div className="container mx-auto items-center"></div>*/}
-          </header>
-      </div>
+      <Router>
+          <div>
+              <header className="bg-blue-50 py-4">
+                  <AppBar navigation={menu} notifications={false} usercookie={user} loginstate={logout} partida={partida}/>
+                  {/*<div className="container mx-auto items-center"></div>*/}
+              </header>
+          </div>
 
-        {/*Instanciamos tantas pantallas como componentes tiene el menu */}
-        <Routes>
-            {
-                menu.map((menu, index) => (
-                    <Route key={index} path={menu.href} element={menu.element} />
-                ))
-            }
-        </Routes>
+          {/*Instanciamos tantas pantallas como componentes tiene el menu */}
+          <Routes>
+              <Route path="/test" element={<About/>}/>
+              <Route path="*" element={<NoPage />} />
+              {
+                  menu.map((menu, index) => (
+                      <Route key={index} path={menu.href} element={menu.element} />
+                  ))
+              }
+          </Routes>
 
-    </Router>
-    
+      </Router>
+
   )
 }
 
